@@ -1,0 +1,6 @@
+# action.yml
+name: 'Censys Take Home'
+description: 'Build the Censys Take Home Work'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
