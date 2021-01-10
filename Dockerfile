@@ -6,7 +6,7 @@ COPY . .
 
 # Build
 #
-RUN CGO_ENABLED=0 go build -o bin/ cmd/*
+RUN CGO_ENABLED=0 go build -o bin/censys-take-home cmd/*
 
 # --------------------------------------------------------------
 
