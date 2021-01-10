@@ -1,0 +1,96 @@
+# ------------------------------------------------------------------------------------ #
+##
+## >> Base Configuration for: Censys-take-home
+##
+# ------------------------------------------------------------------------------------ #
+
+# App Configuration ------------------------------------------------------------------ #
+#   Variables here are set as Environment Variables loaded from a ConfigMap
+#
+app:
+  config:
+    ENVIRON: alpha
+  secret:
+    TEST: TESTVALUE
+
+# Deployment Options ----------------------------------------------------------------- #
+#
+deployment:
+  replicas: 1
+  ports:
+    - name: primary
+      port: 8080
+  podAntiAffinity:
+    # enable pod anti affinity to ensure replicas will be on different worker nodes when possible
+    enabled: false
+
+# Service Options -------------------------------------------------------------------- #
+#   + Relevant Ingress Paths
+# All Ports listed Here are Exposed to the Ingress (if one exists).
+#
+service:
+  ports:
+    primary:
+      port: 443
+      targetPort: primary
+      ingress:
+        paths:
+          - /
+
+# Ingress Options -------------------------------------------------------------------- #
+#   These only refer to the built-in Ingress which is not deployed by default.
+#
+ingress:
+  enabled: true
+  hostname: placeholder.censys.io
+
+  # Annotations
+  #
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: 'true'
+
+    # Cross Origin Requests
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "*"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+
+  # Ingress TLS configuration
+  # Secrets must be manually created in the namespace
+  #
+  tls:
+  - hosts:
+    - placeholder.censys.io
+
+
+# App Image -------------------------------------------------------------------------- #
+#
+images:
+
+  pullSecrets:
+    - gitlab-pull-secret
+
+  # The Main Application
+  #
+  app:
+    repository: registry.gitlab.com/arroyonetworks/inflow/stork
+    tag: latest
+    pullPolicy: Always
+    resources:
+      limits:
+        memory: 64Mi
+      #   cpu: 200m
+      requests:
+        memory: 64Mi
+      #   cpu: 100m
+    probes:
+      readinessProbe:
+        tcpSocket:
+          port: primary
+        initialDelaySeconds: 5
+      livenessProbe:
+        tcpSocket:
+          port: primary
+        initialDelaySeconds: 5
+      #startupProbe:

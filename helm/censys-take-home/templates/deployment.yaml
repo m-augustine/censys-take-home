@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "app.fullname" . }}
+  labels:
+    app: {{ template "app.name" . }}
+    app_version: "{{ .Chart.AppVersion }}"
+    chart: {{ template "app.chart" . }}
+    release: "{{ .Release.Name }}"
+    helm_release_name: "{{ .Release.Name }}"
+    helm_revision: "{{ .Release.Revision }}"
+spec:
+  selector:
+    matchLabels:
+      app: "{{ template "app.name" . }}"
+      release: "{{ .Release.Name }}"
+  replicas: {{ .Values.deployment.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "app.name" . }}
+        release: "{{ .Release.Name }}"
+    spec:
+      {{- if .Values.deployment.podAntiAffinity.enabled }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - {{ template "app.name" . }}
+              topologyKey: "kubernetes.io/hostname"
+      {{- end }}        
+      restartPolicy: Always
+      {{- range .Values.images.pullSecrets }}
+      imagePullSecrets:
+        - name: "{{ . }}"
+      {{- end }}
+      containers:
+        - name: "{{ .Chart.Name }}"
+          {{- if .Values.images.app.tag }}
+          image: "{{ .Values.images.app.repository }}:{{ .Values.images.app.tag }}"
+          {{- else }}
+          image: "{{ .Values.images.app.repository }}:v{{ .Chart.AppVersion }}"
+          {{- end }}
+          imagePullPolicy: "{{ .Values.images.app.pullPolicy }}"
+          ports:
+          {{- range $def := .Values.deployment.ports }}
+            - name: "{{ $def.name }}"
+              containerPort: {{ $def.port }}
+          {{- end }}
+          envFrom:
+            - configMapRef:
+                name: {{ template "app.fullname" . }}
+                optional: false
+            - secretRef:
+                name: {{ template "app.fullname" . }}
+                optional: false
+          resources:
+{{ toYaml .Values.images.app.resources | indent 12 }}
+          {{- if .Values.images.app.probes }}
+          {{ toYaml .Values.images.app.probes | indent 10 | trim }}
+          {{- end }}
+
