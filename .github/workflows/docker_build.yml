@@ -12,6 +12,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-
     - name: Build and push Docker Image
-      uses: flownative/action-docker-build@v1.8.0
+      run: docker build -t censys-take-home:latest .
