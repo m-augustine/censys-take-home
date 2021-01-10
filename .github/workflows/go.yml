@@ -1,0 +1,17 @@
+name: Docker build and push
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build and push Docker Image
+      uses: flownative/action-docker-build@v1.8.0
