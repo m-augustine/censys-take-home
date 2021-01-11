@@ -6,6 +6,7 @@
       <a href="#about-the-project">About The Project</a>
       <ul>
         <li><a href="#built-with">Built With</a></li>
+        <li><a href="#application-concepts">Application Concepts</a></li>
       </ul>
     </li>
     <li>
@@ -28,8 +29,6 @@ IPGeoLocator is a simple API that will a receive a IP Address and return seveal 
 
 IPGeoLocator uses the free GeoLite2 database provided by MaxMind. When run in a Kubernetes cluster, the database will be easy to keep up-to-date.
 
-The container is built automatically usuing github actions and pushed to a public repository in Docker Hub: mmaugust/ipgeolocator.
-
 ### Built With
 
 IPGeoLocator was built on the following technologies:
@@ -38,7 +37,15 @@ IPGeoLocator was built on the following technologies:
 * [Kubernetes](https://kubernetes.io/)
 * [GeoLite2](https://www.maxmind.com/en/home)
 
+<!-- APPLICATION CONCEPTS -->
+### Application Concepts
+The IPGeoLocator application is designed to be containerized and  deployed via Helm into a Kubernetes environment. The Helm chart contains all the approriate Kubernetes resrouce definitions to make the application and 1-line install command
 
+Once started, Init containers will download the MaxMind GeoLite2-City database into the container filesystem. The IPGeoLocator app will use this database to return Geo location information pertaning to any IP Address that it recieves via its REST API.
+
+Kubernetes cronjobs are deployed with a default once-per-week trigger to perform a rolling restart on the deployment. During this process, each pod is restarted which. When a pod restarts, it downloads the latest version of the MaxMind GeoLite2 database. Pods are restarted one-by-one. The next pod will not be restarted untill the previous pod is in a ready state. If you have only 1 replica, the service will be unavailable during this time. 
+
+The prjoect utilizes Github Actions to build a new version of the container and push it to the public Docker repository whenever there is a push to the Main branch or when a PR is merged in.
 
 <!-- GETTING STARTED -->
 ## Getting Started
