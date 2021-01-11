@@ -54,11 +54,11 @@ This is an example of how to list things you need to use the software and how to
 1. Get your Maxmind License Key at [https://www.maxmind.com/en/home]https://www.maxmind.com/en/home)
 2. Clone the repo
    ```sh
-   git clone git@github.com:m-augustine/censys-take-home.git
-   ```
+   git clone git@github.com:m-augustine/ipgeolocator.git
+   
 3. (Optional) If you decide to build the container locally, run the following command, otherwise skip to step 4
    ```sh
-   docker build -t mmaugust/censys-take-home:latest .
+   docker build -t mmaugust/ipgeolocator:latest .
    ```
    If you build manually, you will need to make the images available to kubernetes cluster and alter the helm files to use the proper image repository
 4. Move in the 'helm' directry

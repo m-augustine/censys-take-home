@@ -6,7 +6,7 @@ COPY . .
 
 # Build
 #
-RUN CGO_ENABLED=0 go build -o bin/censys-take-home cmd/*
+RUN CGO_ENABLED=0 go build -o bin/ipgeolocator cmd/*
 
 # --------------------------------------------------------------
 
@@ -14,4 +14,4 @@ FROM scratch
 
 COPY --from=builder /workspace/bin/* /
 
-ENTRYPOINT [ "/censys-take-home" ]
+ENTRYPOINT [ "/ipgeolocator" ]

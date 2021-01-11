@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------------------------ #
 ##
-## >> Base Configuration for: Censys-take-home
+## >> Base Configuration for: IPGeoLocator
 ##
 # ------------------------------------------------------------------------------------ #
 
@@ -78,7 +78,7 @@ service:
 #
 ingress:
   enabled: false
-  hostname: placeholder.censys.io
+  hostname: placeholder.url.io
 
   # Annotations
   #
@@ -97,7 +97,7 @@ ingress:
   #
   tls:
   - hosts:
-    - placeholder.censys.io
+    - placeholder.url.io
 
 
 # App Image -------------------------------------------------------------------------- #
@@ -106,7 +106,7 @@ images:
   # The Main Application
   #
   app:
-    repository: mmaugust/censys-take-home
+    repository: mmaugust/ipgeolocator
     tag: latest
     pullPolicy: Always
     # resources:

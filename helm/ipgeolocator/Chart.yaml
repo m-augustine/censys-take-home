@@ -1,6 +1,6 @@
-name: censys-take-home
+name: ipgeolocator
 version: 1.0.0
 appVersion: latest
 description: "Geolite2 database REST API for geting IP location information"
 sources:
-- https://github.com/m-augustine/censys-take-home
+- https://github.com/m-augustine/ipgeolocator

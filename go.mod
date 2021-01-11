@@ -1,4 +1,4 @@
-module github.com/m-augustine/censys-take-home
+module github.com/m-augustine/ipgeolocator
 
 go 1.14
 
