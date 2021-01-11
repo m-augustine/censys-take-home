@@ -57,7 +57,7 @@ deployment:
 service:
   ports:
     primary:
-      port: 443
+      port: 80
       targetPort: primary
       ingress:
         paths:
@@ -100,20 +100,20 @@ images:
     repository: mmaugust/censys-take-home
     tag: latest
     pullPolicy: Always
-    resources:
-      limits:
-        memory: 64Mi
-      #   cpu: 200m
-      requests:
-        memory: 64Mi
-      #   cpu: 100m
+    # resources:
+    #   limits:
+    #     memory: 128i
+    #   #   cpu: 200m
+    #   requests:
+    #     memory: 64Mi
+    #   #   cpu: 100m
     probes:
-      readinessProbe:
-        tcpSocket:
-          port: primary
-        initialDelaySeconds: 5
-      livenessProbe:
-        tcpSocket:
-          port: primary
-        initialDelaySeconds: 5
+      # readinessProbe:
+      #   tcpSocket:
+      #     port: primary
+      #   initialDelaySeconds: 5
+      # livenessProbe:
+      #   tcpSocket:
+      #     port: primary
+      #   initialDelaySeconds: 5
       #startupProbe:
