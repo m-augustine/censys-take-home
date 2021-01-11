@@ -45,7 +45,6 @@ IPGeoLocator was built on the following technologies:
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
 * GO >= 1.11 ( for running locally)
 * In order to use the helm deployment, you will need a working kubernetes cluster
 * A Maxmind license key - https://www.maxmind.com/en/home
