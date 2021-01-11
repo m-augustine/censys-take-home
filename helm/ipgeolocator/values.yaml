@@ -64,6 +64,7 @@ deployment:
 # All Ports listed Here are Exposed to the Ingress (if one exists).
 #
 service:
+  type: NodePort #Support for: 'ClusterIP' is default, 'NodePort' exposes a node on the worker host machine
   ports:
     primary:
       port: 80

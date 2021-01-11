@@ -9,6 +9,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  type: "{{ .Values.service.type }}"
   ports:
   {{- range $name, $def := .Values.service.ports }}
     - name: {{ $name }}
