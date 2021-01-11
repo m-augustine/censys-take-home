@@ -110,20 +110,20 @@ images:
     repository: mmaugust/ipgeolocator
     tag: latest
     pullPolicy: Always
-    # resources:
-    #   limits:
-    #     memory: 128i
-    #   #   cpu: 200m
-    #   requests:
-    #     memory: 64Mi
-    #   #   cpu: 100m
+    resources:
+      limits:
+        memory: 128i
+        cpu: 200m
+      requests:
+        memory: 128i
+        cpu: 200m
     probes:
-      # readinessProbe:
-      #   tcpSocket:
-      #     port: primary
-      #   initialDelaySeconds: 5
-      # livenessProbe:
-      #   tcpSocket:
-      #     port: primary
-      #   initialDelaySeconds: 5
-      #startupProbe:
+      readinessProbe:
+        tcpSocket:
+          port: primary
+        initialDelaySeconds: 30
+      livenessProbe:
+        tcpSocket:
+          port: primary
+        initialDelaySeconds: 30
+      startupProbe:
