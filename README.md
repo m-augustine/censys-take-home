@@ -76,6 +76,8 @@ This is an example of how to list things you need to use the software and how to
    cd helm
    ```liste
 4. Update the settings in values.yaml to configure the application for your needs. You can set the GL2_LICENSE_KEY in the values.yaml file or in the helm command itself.
+    Helm settings decriptions can be found in the Helm [README.md](https://github.com/m-augustine/ipgeolocator/blob/main/helm/ipgeolocator/README.md)
+	
 5. Run the helm installation command
    ```JS
    helm install -n <your namespace> <helm name> <chart>
