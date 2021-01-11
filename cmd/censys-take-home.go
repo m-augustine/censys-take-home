@@ -72,18 +72,25 @@ var args = struct {
 }
 
 func main() {
+	println("1")
 	// Parse and load the environment varialbe using Kingpin library
 	kingpin.Parse()
+	println("2")
 	// Add the handler function for the primary app function of recieving and IP addresa and returning location data in JSON format
 	http.HandleFunc(*args.appUrlPath, checkIP)
+	println("3")
 	// If enabled, add basic prometheus metrics handling on '/metrics'
 	if *args.metrics {
 		http.Handle(*args.metricsUrlPath, promhttp.Handler())
+		println("4")
 	}
 	if *args.debug {
+
+		println("6")
 		fmt.Printf("Starting Server: listening on %s", *args.bindAddr)
 	}
 	// Start the http listener.
+	println("5")
 	log.Fatal(http.ListenAndServe((*args.bindAddr).String(), nil))
 }
 
