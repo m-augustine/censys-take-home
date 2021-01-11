@@ -59,7 +59,7 @@ var args = struct {
 		Default("en").
 		String(),
 	kingpin.Flag("enable-metrics", "Enable Metrics").
-		Envar("ENABLE_METRICS").
+		Envar("METRICS").
 		Bool(),
 	kingpin.Flag("debug", "Debug Mode").
 		Envar("DEBUG").
