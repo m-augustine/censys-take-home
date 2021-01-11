@@ -22,16 +22,17 @@ app:
     #METRICS_URL_PATH:
 
     ## Set the GeoLite2 Database file path. Usually doesnt need to be changed as the filesystem is in the container
-    GL2_DATABASE_PATH: "/tmp/GeoLite2-City.mmdb"
+    GL2_DATABASE_PATH: "/tmp"
+    GL2_DATABASE_FILENAME: "GeoLite2-City.mmdb"
 
     ## Set the GeoLite2 Locale. Default is 'en'
     #GL2_LOCALE:
 
     ## Enalbe Metrics. Default off (false)
-    #METRICS:
+    METRICS: true
 
     ## Enable debugging. Default off (false)
-    #DEBUG:
+    DEBUG: true
 
   secret:
     ### REQUIRED
@@ -67,7 +68,7 @@ service:
 #   These only refer to the built-in Ingress which is not deployed by default.
 #
 ingress:
-  enabled: true
+  enabled: false
   hostname: placeholder.censys.io
 
   # Annotations

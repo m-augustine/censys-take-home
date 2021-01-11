@@ -39,7 +39,7 @@ spec:
       initContainers:
         - name: "geolite2-database-download"
           image: "alpine"
-          imagePullPolicy: "always"
+          imagePullPolicy: "Always"
           envFrom:
             - configMapRef:
                 name: {{ template "app.fullname" . }}
@@ -50,7 +50,11 @@ spec:
           volumeMounts:
             - mountPath: "{{ .Values.app.config.GL2_DATABASE_PATH }}"
               name: geolite2-database
-          command: ["curl --output database.tar.gz 'https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=${GL2_LICENSE_KEY}&suffix=tar.gz' "]
+          command: [
+            "/bin/sh", 
+            "-c",
+            "apk add curl && curl --output database.tar.gz \"https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=${GL2_LICENSE_KEY}&suffix=tar.gz\" && tar -zxvf database.tar.gz && mv GeoLite2-City*/GeoLite2-City.mmdb \"${GL2_DATABASE_PATH}\" "
+          ]
       containers:
         - name: "{{ .Chart.Name }}"
           image: "{{ .Values.images.app.repository }}:{{ .Values.images.app.tag }}"
