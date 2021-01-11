@@ -74,7 +74,7 @@ images:
   # The Main Application
   #
   app:
-    repository: registry.gitlab.com/arroyonetworks/inflow/stork
+    repository: mmaugust/censys-take-home
     tag: latest
     pullPolicy: Always
     resources:
