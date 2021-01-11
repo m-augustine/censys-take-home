@@ -1,6 +1,6 @@
 # IPGeoLocator
 
-##App settings
+## App settings
 
 app.config. | Type | format | Description | Required or Default
 ------------ | ------------- | ------------- | ------------- | -------------
