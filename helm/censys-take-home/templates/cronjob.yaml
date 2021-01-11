@@ -1,0 +1,23 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: deployment-restart
+spec:
+  concurrencyPolicy: Forbid
+  schedule: "{{ .Values.cronjob.schedule }}"
+  jobTemplate:
+    spec:
+      backoffLimit: {{ .Values.cronjob.backoffLimit }}
+      activeDeadlineSeconds: {{ .Values.cronjob.activeDeadlineSeconds }}
+      template:
+        spec:
+          serviceAccountName: deployment-restart
+          restartPolicy: Never
+          containers:
+            - name: kubectl
+              image: bitnami/kubectl
+              command:
+                - 'kubectl'
+                - 'rollout'
+                - 'restart'
+                - 'deployment/{{ template "app.fullname" . }}'

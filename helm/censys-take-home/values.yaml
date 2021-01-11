@@ -39,6 +39,15 @@ app:
     ## Set the GeoLite2
     GL2_LICENSE_KEY: <your license key>
 
+# Cronjob Configuration ------------------------------------------------------------------ #
+#   This is used to configure the cronjob that will restart the pod and pull the latest
+#   GeoLite2 database
+#
+cronjob:
+  schedule: '*/5 * * * *' 
+  backoffLimit: 2
+  activeDeadlineSeconds: 600
+
 # Deployment Options ----------------------------------------------------------------- #
 #
 deployment:
