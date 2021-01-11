@@ -36,18 +36,28 @@ spec:
               topologyKey: "kubernetes.io/hostname"
       {{- end }}        
       restartPolicy: Always
-      {{- range .Values.images.pullSecrets }}
-      imagePullSecrets:
-        - name: "{{ . }}"
-      {{- end }}
+      initContainers:
+        - name: "geolite2-database-download"
+          image: "alpine"
+          imagePullPolicy: "always"
+          envFrom:
+            - configMapRef:
+                name: {{ template "app.fullname" . }}
+                optional: false
+            - secretRef:
+                name: {{ template "app.fullname" . }}
+                optional: false
+          volumeMounts:
+            - mountPath: "{{ .Values.app.config.GL2_DATABASE_PATH }}"
+              name: geolite2-database
+          command: ["curl --output database.tar.gz 'https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=${GL2_LICENSE_KEY}&suffix=tar.gz' "]
       containers:
         - name: "{{ .Chart.Name }}"
-          {{- if .Values.images.app.tag }}
           image: "{{ .Values.images.app.repository }}:{{ .Values.images.app.tag }}"
-          {{- else }}
-          image: "{{ .Values.images.app.repository }}:v{{ .Chart.AppVersion }}"
-          {{- end }}
           imagePullPolicy: "{{ .Values.images.app.pullPolicy }}"
+          volumeMounts:
+            - mountPath: "{{ .Values.app.config.GL2_DATABASE_PATH }}"
+              name: geolite2-database
           ports:
           {{- range $def := .Values.deployment.ports }}
             - name: "{{ $def.name }}"
@@ -65,4 +75,7 @@ spec:
           {{- if .Values.images.app.probes }}
           {{ toYaml .Values.images.app.probes | indent 10 | trim }}
           {{- end }}
+      volumes:
+      - name: geolite2-database
+        emptyDir: {}
 

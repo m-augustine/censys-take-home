@@ -5,13 +5,38 @@
 # ------------------------------------------------------------------------------------ #
 
 # App Configuration ------------------------------------------------------------------ #
-#   Variables here are set as Environment Variables loaded from a ConfigMap
+#   Variables here are set as Environment Variables loaded from a ConfigMap or Secret
 #
+
 app:
   config:
-    ENVIRON: alpha
+    ##Set the bind address and port. Default is '0.0.0.0:8080'
+    #LISTEN_ADDRESS_PORT: 
+
+    ## Set the App URL Path. Default is /location
+    ## Note: Update the service ingress paths below if changed
+    #APP_URL_PATH:
+
+    ## Set the Metrics URL Path. Default is /metrics. Note: Metrics must be enabled.
+    ## Note: Update the service ingress paths below if changed
+    #METRICS_URL_PATH:
+
+    ## Set the GeoLite2 Database file path. Usually doesnt need to be changed as the filesystem is in the container
+    GL2_DATABASE_PATH: "/tmp/GeoLite2-City.mmdb"
+
+    ## Set the GeoLite2 Locale. Default is 'en'
+    #GL2_LOCALE:
+
+    ## Enalbe Metrics. Default off (false)
+    #METRICS:
+
+    ## Enable debugging. Default off (false)
+    #DEBUG:
+
   secret:
-    TEST: TESTVALUE
+    ### REQUIRED
+    ## Set the GeoLite2
+    GL2_LICENSE_KEY: <your license key>
 
 # Deployment Options ----------------------------------------------------------------- #
 #
@@ -35,7 +60,8 @@ service:
       targetPort: primary
       ingress:
         paths:
-          - /
+          - /locaiton
+          - /metrics
 
 # Ingress Options -------------------------------------------------------------------- #
 #   These only refer to the built-in Ingress which is not deployed by default.
@@ -67,10 +93,6 @@ ingress:
 # App Image -------------------------------------------------------------------------- #
 #
 images:
-
-  pullSecrets:
-    - gitlab-pull-secret
-
   # The Main Application
   #
   app:
