@@ -15,7 +15,7 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#Testing">Testing</a></li>
+    <li><a href="#testing">Testing</a></li>
   </ol>
 </details>
 
@@ -26,7 +26,9 @@
 
 IPGeoLocator is a simple API that will a receive a IP Address and return seveal facts about the location of that IP Address around the globe.
 
-IPGeoLocator uses the free GeoLite2 database. When run in a Kubernetes cluster, the database will be easy to keep up-to-date
+IPGeoLocator uses the free GeoLite2 database provided by MaxMind. When run in a Kubernetes cluster, the database will be easy to keep up-to-date
+
+The container is built automatically usuing github actions and pushed to a public repository in Docker Hub: mmaugust/ipgeolocator
 
 ### Built With
 
@@ -47,33 +49,44 @@ This is an example of how to list things you need to use the software and how to
 * GO >= 1.11 ( for running locally)
 * In order to use the helm deployment, you will need a working kubernetes cluster
 * A Maxmind license key - https://www.maxmind.com/en/home
-* A tool for sending HTTP requests, like [Postman](https://www.postman.com/downloads/) or [CURL]
+* A tool for sending HTTP requests, like [Postman](https://www.postman.com/downloads/) or Curl
 
-### Helm  Installation
-
-1. Get your Maxmind License Key at [https://www.maxmind.com/en/home]https://www.maxmind.com/en/home)
-2. Clone the repo
+### (optional) Building the container locally
+1. Clone the repo
    ```sh
    git clone git@github.com:m-augustine/ipgeolocator.git
-   
-3. (Optional) If you decide to build the container locally, run the following command, otherwise skip to step 4
+   ```
+2. Buld the container
    ```sh
+   cd ipgeolocator
    docker build -t mmaugust/ipgeolocator:latest .
    ```
    If you build manually, you will need to make the images available to kubernetes cluster and alter the helm files to use the proper image repository
-4. Move in the 'helm' directry
+
+## Installation
+
+#### Helm
+1. Get your MaxMind License Key at [the MaxMind website]https://www.maxmind.com/en/home)
+2. Clone the repo
+   ```sh
+   git clone git@github.com:m-augustine/ipgeolocator.git
+   ```
+3. Move in the 'helm' directry
    ```JS
    cd helm
    ```liste
+4. Update the settings in values.yaml to configure the application for your needs. You can set the GL2_LICENSE_KEY in the values.yaml file or in the helm command itself.
 5. Run the helm installation command
    ```JS
    helm install -n <your namespace> <helm name> <chart>
+   or
+   helm install -n <your namespace> --set app.secret.GL2_LICENSE_KEY="<your license key>" <name> <chart>
    
    i.e.
-   helm install -n app ipgeolocator ./ipgeolocator
+   helm install -n default --set app.secret.GL2_LICENSE_KEY="d99wjnkieje" ipgeolocator ./ipgeolocator
    ```
-liste
-<!-- USAGE EXAMPLES -->metrics
+
+<!-- TESTING -->
 ## Testing
 
 #### The request
