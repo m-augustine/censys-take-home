@@ -22,13 +22,43 @@ GL2_LICENSE_KEY | string | "du93ij39djd" | This is your license key to access th
 cronjob. | Type | format | Description 
 ------------ | ------------- | ------------- | -------------
 schedule | string | ```'*/5 * * * *''``` | The cronjob schedule. When and how often the cronjob should trigger
-backoffLimit | decimal | ```2``` | How many times the cronjob and fail and retry for failing permanently 
-activeDeadlineSeconds | decimal | ```600``` | How long the cronjob can run for before triggering a failure
+backoffLimit | int | ```2``` | How many times the cronjob and fail and retry for failing permanently 
+activeDeadlineSeconds | int | ```600``` | How long the cronjob can run for before triggering a failure
 
+deploymnt. | Type | format | Description 
+------------ | ------------- | ------------- | -------------
+replicas | int | ```1``` | The number of replica pods to run
+ports[x].name | string | "primary" | The name of the port. Must match the server.ports.<port>.targetPort
+ports[x].port | int | "primary" | the port in the pod to expose. Should be the same as the port in LISTEN_ADDRESS_PORT
+podantiAffinity | bool | false | Enable pod Anti Affinity if you wish to have replicas on differnet work noes
 
 service. | Type | format | Description 
 ------------ | ------------- | ------------- | -------------
 type | string | "NodePort" | The type of kubernetes service. 'ClusterIP' or 'NodePort' (default)
+
+ingress. | Type | format | Description 
+------------ | ------------- | ------------- | -------------
+enabled | bool | false | Enable the creation of Kubernetes ingress object. 
+hostname | string | "hostname.url.com" | The URL that will be used to access the service throught this ingress
+annotations | list | list | List of annotations for the ingress object
+tls.hosts[x] | list | list | List of hostnames to use in the creation of a TLS certificate 
+
+
+images. | Type | format | Description 
+------------ | ------------- | ------------- | -------------
+app.repository | string | "mmaugust/ipgeolocator" | The docker repository to use for the container
+app.tag | string | "latest" | The tag to pull from the docker repository
+aop.pullPolicy | string | "Always" | The policy to use when the pod starts to determine if the images should be pulled
+
+
+### Image resources
+
+Use the images.app.resources section to control the CPU/Memeory limits and requests for the pod
+More information can be found [HERE](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/)
+
+### Probes
+Use the images.app.probes section to control probes for the pod
+More information can be found [HERE](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
 
 ## Install command
 ```sh
