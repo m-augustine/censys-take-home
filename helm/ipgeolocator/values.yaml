@@ -112,10 +112,10 @@ images:
     pullPolicy: Always
     resources:
       limits:
-        memory: 128i
+        memory: 128Mi
         cpu: 200m
       requests:
-        memory: 128i
+        memory: 128Mi
         cpu: 200m
     probes:
       readinessProbe:
