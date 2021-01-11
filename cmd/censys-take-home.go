@@ -72,25 +72,18 @@ var args = struct {
 }
 
 func main() {
-	println("1")
 	// Parse and load the environment varialbe using Kingpin library
 	kingpin.Parse()
-	println("2")
 	// Add the handler function for the primary app function of recieving and IP addresa and returning location data in JSON format
 	http.HandleFunc(*args.appUrlPath, checkIP)
-	println("3")
 	// If enabled, add basic prometheus metrics handling on '/metrics'
 	if *args.metrics {
 		http.Handle(*args.metricsUrlPath, promhttp.Handler())
-		println("4")
 	}
 	if *args.debug {
-
-		println("6")
 		log.Printf("Starting Server: listening on %s", *args.bindAddr)
 	}
 	// Start the http listener.
-	println("5")
 	log.Fatal(http.ListenAndServe((*args.bindAddr).String(), nil))
 }
 
@@ -102,6 +95,10 @@ func checkIP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
+	} else {
+		if *args.debug {
+			log.Printf("Handling request for IP location: %s", params.Address)
+		}
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -111,6 +108,9 @@ func checkIP(w http.ResponseWriter, r *http.Request) {
 	case "POST":
 		w.WriteHeader(http.StatusCreated)
 		w.Write(post(params.Address))
+		if *args.debug {
+			log.Printf("Sending geo record for %s.", params.Address)
+		}
 	default:
 		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte(`{"message": "Requested method not supported"}`))
@@ -128,6 +128,10 @@ func post(address string) []byte {
 	record, err := reader.Lookup(net.ParseIP(address))
 	if err != nil {
 		panic(err)
+	} else {
+		if *args.debug {
+			log.Printf("Geo record for %s found.", address)
+		}
 	}
 
 	// Place the return data into the struct
