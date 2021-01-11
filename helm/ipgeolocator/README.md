@@ -26,6 +26,10 @@ backoffLimit | decimal | ```2``` | How many times the cronjob and fail and retry
 activeDeadlineSeconds | decimal | ```600``` | How long the cronjob can run for before triggering a failure
 
 
+service. | Type | format | Description 
+------------ | ------------- | ------------- | -------------
+type | string | "NodePort" | The type of kubernetes service. 'ClusterIP' or 'NodePort' (default)
+
 ## Install command
 ```sh
 helm install -n <namespace> <helm name> ipgeolocator/
