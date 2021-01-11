@@ -44,7 +44,7 @@ IPGeoLocator was built on the following technologies:
 ### Prerequisites
 
 This is an example of how to list things you need to use the software and how to install them.
-* GO >= 1.11
+* GO >= 1.11 ( for running locally)
 * In order to use the helm deployment, you will need a working kubernetes cluster
 * A Maxmind license key - https://www.maxmind.com/en/home
 * A tool for sending HTTP requests, like [Postman](https://www.postman.com/downloads/)
@@ -84,32 +84,8 @@ liste
 	"address": "68.48.244.19"
 }
    ```
- #### Using Kubernetes port-forward
-When the pod is running, you can port-forward to the application to test that it is working. 
-
-#### Port-forward to pod
-```sh
-kubectl -n <pod namespace>  port-forward <pod name> <local port>:<app port>
-   ```
-   
-Variable | Description
------------- | -------------
-```<pod namepsace>``` | The Kubernetes namespace that you deployed the pod to
-```<pod name>``` | The name of the Kubernetes pod.
-```<local port>``` |  The port on your local machine that kubernetes will bind to and listen on in order to forward the requests to the <app port>. This can be any value within the normal range that isnt currently in use. 
-```<app port>``` | The port that the application is listening on inside the pod. This is configured in the helm values file.
-  
-
- Once the service port-forward is running, you can send your HTTP(s) POST request to ```http://127.0.0.1:<local port>/<app url path>```
- 
-  ```<app url path>``` is the url path that the server is listening on. This is configured in the helm values file
-  i.e.   http://127.0.0.1:8080/location
-  
-  If you have enabled Metrics, you can send your HTTP(s) GET request to ```http://127.0.0.1:/<port>/<metrics url path>```
-  
-  ```<metrics url path>``` is the url path that the server is listening on. This is configured in the helm values file
-  i.e. http://127.00.1:8080/metrics
-
+#### Using Kubernetes port-forward
+When the pod is running, you can port-forward to the application via the Kubernetes service or directly to the pod itself to test that it is working. 
 
 #### Port-forward to service
 
@@ -141,10 +117,51 @@ Variable | Description
   
   ```<metrics url path>``` is the url path that the server is listening on. This is configured in the helm values file
   i.e. http://127.00.1:80800/metrics
+  
+  
+
+#### Port-forward to pod
+```sh
+kubectl -n <pod namespace>  port-forward <pod name> <local port>:<app port>
+   ```
+   
+Variable | Description
+------------ | -------------
+```<pod namepsace>``` | The Kubernetes namespace that you deployed the pod to
+```<pod name>``` | The name of the Kubernetes pod.
+```<local port>``` |  The port on your local machine that kubernetes will bind to and listen on in order to forward the requests to the <app port>. This can be any value within the normal range that isnt currently in use. 
+```<app port>``` | The port that the application is listening on inside the pod. This is configured in the helm values file.
+  
+
+ Once the service port-forward is running, you can send your HTTP(s) POST request to ```http://127.0.0.1:<local port>/<app url path>```
+ 
+  ```<app url path>``` is the url path that the server is listening on. This is configured in the helm values file
+  i.e.   http://127.0.0.1:8080/location
+  
+  If you have enabled Metrics, you can send your HTTP(s) GET request to ```http://127.0.0.1:/<port>/<metrics url path>```
+  
+  ```<metrics url path>``` is the url path that the server is listening on. This is configured in the helm values file
+  i.e. http://127.00.1:8080/metrics
 
 #### Using Kubernetes ingress
 
 If you used a kubernetes ingress you will be able to target the Ingress IP address or configured URL  to make the HTTP(s) POST request
+
+#### Direct Access
+
+If you have a machine on the Kubernetes service network, or are using another pod in the same cluster you can access the IPGeiLocator Kubernetes service directly.
+
+1. Get the IPGeiLocator Kubernetes service address
+```sh
+kubectl -n <pod namespace> get service
+```
+2. Note the value in the 'CLUSTER_IP' column. This will be the address that you use to reach the IPGeoLocator app
+
+3. Send your HTTP(s) request
+
+
+
+
 
 
 
