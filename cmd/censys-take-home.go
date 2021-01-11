@@ -87,7 +87,7 @@ func main() {
 	if *args.debug {
 
 		println("6")
-		fmt.Printf("Starting Server: listening on %s", *args.bindAddr)
+		log.Printf("Starting Server: listening on %s", *args.bindAddr)
 	}
 	// Start the http listener.
 	println("5")
