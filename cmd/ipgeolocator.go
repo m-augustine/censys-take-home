@@ -90,6 +90,8 @@ func main() {
 func checkIP(w http.ResponseWriter, r *http.Request) {
 	var params Params
 
+	w.Header().Set("Content-Type", "application/json")
+
 	// Take the HTTP POST Body and store the data in the params struct
 	err := json.NewDecoder(r.Body).Decode(&params)
 	if err != nil {
@@ -101,8 +103,6 @@ func checkIP(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-
 	// Only act on the request if the method id POST
 	switch r.Method {
 	case "POST":
@@ -112,7 +112,7 @@ func checkIP(w http.ResponseWriter, r *http.Request) {
 			log.Printf("Sending geo record for %s.", params.Address)
 		}
 	default:
-		w.WriteHeader(http.StatusNotFound)
+		w.WriteHeader(http.StatusMethodNotAllowed)
 		w.Write([]byte(`{"message": "Requested method not supported"}`))
 	}
 }
@@ -127,7 +127,7 @@ func post(address string) []byte {
 	// Call the database and recieve the appropriate record
 	record, err := reader.Lookup(net.ParseIP(address))
 	if err != nil {
-		panic(err)
+		return []byte("{ 'error': 'Possible error with request body' }")
 	} else {
 		if *args.debug {
 			log.Printf("Geo record for %s found.", address)
