@@ -87,14 +87,17 @@ liste
  #### Using Kubernetes port-forward
 When the pod is running, you can port-forward to the application to test that it is working. 
 
-###### Port-forward to pod
+#### Port-forward to pod
 ```sh
 kubectl -n <pod namespace>  port-forward <pod name> <local port>:<app port>
    ```
-<pod namepsace>  is the Kubernetes namespace that you deployed the pod to
-<pod name>  is the name of the Kubernetes pod.
-<local port> is a port on your local machine that kubernetes will bind to and listen on in order to forward the requests to the <app port>. This can be any value within the normal range that isnt currently in use. 
-<app port>  is the port that the application is listening on inside the pod. This is configured in the helm values file.
+   
+Variable | Description
+------------ | -------------
+```<pod namepsace>``` | The Kubernetes namespace that you deployed the pod to
+```<pod name>``` | The name of the Kubernetes pod.
+```<local port>``` |  The port on your local machine that kubernetes will bind to and listen on in order to forward the requests to the <app port>. This can be any value within the normal range that isnt currently in use. 
+```<app port>``` | The port that the application is listening on inside the pod. This is configured in the helm values file.
   
  Once the port-forward is running, you can send your HTTP(s) POST request to http://127.0.0.1:<local port>/<app url path>
   <app url path> is the url path that the server is listening on. This is configured in the helm values file
@@ -106,7 +109,7 @@ kubectl -n <pod namespace>  port-forward <pod name> <local port>:<app port>
 
 
 
-###### Port-forward to service
+#### Port-forward to service
 
 Port forwarding to the Kubernetes service is very similar to port-forwarding to the pod. You simply target the service instead
 
@@ -120,26 +123,24 @@ kubectl -n <pod namespace> get service
 kubectl -n <pod namespace> port-forward svc/<service name> <local port>:<service port>
    ```
      
-<pod namepsace>  is the Kubernetes namespace that you deployed the pod to
-<pod name>  is the name of the Kubernetes pod.
-<local port> is a port on your local machine that kubernetes will bind to and listen on in order to forward the requests to the <app port>. This can be any value within the normal range that isnt currently in use. 
-<service port>  is the port that the application is listening on inside the pod. This is configured in the helm values file.
+Variable | Description
+------------ | -------------
+```<pod namepsace>``` | The Kubernetes namespace that you deployed the pod to
+```<pod name>``` | The name of the Kubernetes pod.
+```<local port>``` |  The port on your local machine that kubernetes will bind to and listen on in order to forward the requests to the <app port>. This can be any value within the normal range that isnt currently in use. 
+```<service port>``` | The port that the service is listening on. This is configured in the helm values file.
   
  Once the service port-forward is running, you can send your HTTP(s) POST request to http://127.0.0.1:<local port>/<app url path>
   <app url path> is the url path that the server is listening on. This is configured in the helm values file
   i.e.   http://127.0.0.1:8000/location
   
   If you have enabled Metrics, you can send your HTTP(s)  Once the port-forward is running, you can send your HTTP(s) POST request to http://127.0.0.1:<port>/<app url path>
-  <app url path> is the url path that the server is listening on. This is configured in the helm values file
+  ```<app url path>``` is the url path that the server is listening on. This is configured in the helm values file
   i.e.   http://127.0.0.1:8080/location
   
   If you have enabled Metrics, you can send your HTTP(s) GET request to http://127.0.0.1:/<port>/<metrics url path>
-  <metrics url path> is the url path that the server is listening on. This is configured in the helm values file
+  ```<metrics url path>``` is the url path that the server is listening on. This is configured in the helm values file
   i.e. http://127.00.1:8080/metrics
-GET request to http://127.0.0.1:/<local port>/<metrics url path>
-  <metrics url path> is the url path that the server is listening on. This is configured in the helm values file
-  i.e. http://127.00.1:8000/metrics
-
 
 #### Using Kubernetes ingress
 
