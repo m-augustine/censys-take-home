@@ -9,6 +9,7 @@ import (
 
 	"github.com/IncSW/geoip2"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"gopkg.in/alecthomas/kingpin.v2"
 )
 
 type Params struct {
@@ -28,14 +29,57 @@ type Details struct {
 	Location  Location
 }
 
+var args = struct {
+	bindAddr             **net.TCPAddr
+	appUrlPath           *string
+	metricsUrlPath       *string
+	geolite2DatabasePath *string
+	geolite2Locale       *string
+	metrics              *bool
+	debug                *bool
+}{
+	kingpin.Flag("bind", "Bind address:port").
+		Envar("LISTEN_ADDRESS_PORT").
+		Default("0.0.0.0:8080").
+		TCP(),
+	kingpin.Flag("app-url-path", "App URL path").
+		Envar("APP_URL_PATH").
+		Default("/location").
+		String(),
+	kingpin.Flag("metrics-url-path", "Metrics URL path").
+		Envar("METRICS_URL_PATH").
+		Default("/metrics").
+		String(),
+	kingpin.Flag("geolite2-database-path", "GeoLite2 mmdb database file path").
+		Envar("GL2_DATABASE_PATH").
+		Default("/tmp/GeoLite2-City.mmdb").
+		String(),
+	kingpin.Flag("geolite2-locale", "GeoLite2 database file locale. Can be 'de', 'en'(default), 'es', 'fr', 'ja', 'pt-BR', 'ru”', and 'zh-CN").
+		Envar("GL2_LOCALE").
+		Default("en").
+		String(),
+	kingpin.Flag("enable-metrics", "Enable Metrics").
+		Envar("ENABLE_METRICS").
+		Bool(),
+	kingpin.Flag("debug", "Debug Mode").
+		Envar("DEBUG").
+		Bool(),
+}
+
 func main() {
+	// Parse and load the environment varialbe using Kingpin library
+	kingpin.Parse()
 	// Add the handler function for the primary app function of recieving and IP addresa and returning location data in JSON format
-	http.HandleFunc("/", checkIP)
-	// Add basic prometheus metrics handling on '/metrics'
-	http.Handle("/metrics", promhttp.Handler())
-	println("Starting Server: listneing on 0.0.0.0:8080")
+	http.HandleFunc(*args.appUrlPath, checkIP)
+	// If enabled, add basic prometheus metrics handling on '/metrics'
+	if *args.metrics {
+		http.Handle(*args.metricsUrlPath, promhttp.Handler())
+	}
+	if *args.debug {
+		fmt.Printf("Starting Server: listening on %s", *args.bindAddr)
+	}
 	// Start the http listener.
-	log.Fatal(http.ListenAndServe("0.0.0.0:8080", nil))
+	log.Fatal(http.ListenAndServe((*args.bindAddr).String(), nil))
 }
 
 func checkIP(w http.ResponseWriter, r *http.Request) {
@@ -57,13 +101,13 @@ func checkIP(w http.ResponseWriter, r *http.Request) {
 		w.Write(post(params.Address))
 	default:
 		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte(`{"message": "Can't find method requested"}`))
+		w.Write([]byte(`{"message": "Requested method not supported"}`))
 	}
 }
 
 func post(address string) []byte {
-	// Load the GeoLite2-City database from the mmdb file path configured 
-	reader, err := geoip2.NewCityReaderFromFile("/tmp/test/GeoLite2-City_20210105/GeoLite2-City.mmdb")
+	// Load the GeoLite2-City database from the mmdb file path configured
+	reader, err := geoip2.NewCityReaderFromFile(*args.geolite2DatabasePath)
 	if err != nil {
 		panic(err)
 	}
@@ -76,9 +120,9 @@ func post(address string) []byte {
 
 	// Place the return data into the struct
 	var details = Details{
-		Continent: record.Continent.Names["en"],
-		Country:   record.Country.Names["en"],
-		City:      record.City.Names["en"],
+		Continent: record.Continent.Names[*args.geolite2Locale],
+		Country:   record.Country.Names[*args.geolite2Locale],
+		City:      record.City.Names[*args.geolite2Locale],
 		Location: Location{
 			Timezone:  record.Location.TimeZone,
 			Latitude:  record.Location.Latitude,
