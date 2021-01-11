@@ -47,7 +47,7 @@ This is an example of how to list things you need to use the software and how to
 * GO >= 1.11 ( for running locally)
 * In order to use the helm deployment, you will need a working kubernetes cluster
 * A Maxmind license key - https://www.maxmind.com/en/home
-* A tool for sending HTTP requests, like [Postman](https://www.postman.com/downloads/)
+* A tool for sending HTTP requests, like [Postman](https://www.postman.com/downloads/) or [CURL]
 
 ### Helm  Installation
 
@@ -84,6 +84,29 @@ liste
 	"address": "68.48.244.19"
 }
    ```
+ 
+#### Using the NodePort with Docker For Desktip
+
+If you left the default for the Kubernetes service, then the service is listening on a nodeport of the worker machine that it is on.
+1. The NodePort should be listening on your machines localhost (127.0.0.1). If it fails with this address, you will need to find the IP address of the node that the pod is running on
+2. Get the service NodePort
+```sh
+$$ kubectl -n <pod namespace> get service
+NAME           TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+ipgeolocator   NodePort   10.232.98.124   <none>        80:30452/TCP   4s
+
+```
+In the 'PORT(S)' column you will somthing similar to ```80:30452/TCP```. The nodeport in this example would be 30452
+
+3. Submit your HTTP request
+```sh
+i.e.
+curl -d '{"address":"68.48.244.192"}' -H 'Content-Type: application/json' http://127.0.0.1:30187/location
+
+If successful, the response will look like:
+{"Continent":"North America","Country":"United States","City":"Ann Arbor","Location":{"Timezone":"America/Detroit","Latitude":42.2324,"Longitude":-83.7017}}
+ 
+   
 #### Using Kubernetes port-forward
 When the pod is running, you can port-forward to the application via the Kubernetes service or directly to the pod itself to test that it is working. 
 
@@ -158,6 +181,21 @@ kubectl -n <pod namespace> get service
 2. Note the value in the 'CLUSTER_IP' column. This will be the address that you use to reach the IPGeoLocator app
 
 3. Send your HTTP(s) request
+
+
+## Troubleshooting
+
+#### The pod is restarting constantly
+You may need to increase the delay on the readiness and liveness probes. If the pod is taking longer that normal to download the database and start the app, the probe may be trying to reach the TCP socket before its ready and failing. After failing a set amount of times, the pod will be restarted
+
+#### The init container is failing
+1. You may have entered a wrong or malformed Maxmind Licence key. This woudl cause the download to fail and subsequently, the init container.
+2. Check that your pods are able to reach the internet
+3. The download is failing because you have reached your download limit for your Maxmind account
+
+
+#### The application somtimes crashes
+Please submit issues with pod logs.
 
 
 
