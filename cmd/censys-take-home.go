@@ -30,13 +30,14 @@ type Details struct {
 }
 
 var args = struct {
-	bindAddr             **net.TCPAddr
-	appUrlPath           *string
-	metricsUrlPath       *string
-	geolite2DatabasePath *string
-	geolite2Locale       *string
-	metrics              *bool
-	debug                *bool
+	bindAddr                 **net.TCPAddr
+	appUrlPath               *string
+	metricsUrlPath           *string
+	geolite2DatabasePath     *string
+	geolite2DatabaseFilename *string
+	geolite2Locale           *string
+	metrics                  *bool
+	debug                    *bool
 }{
 	kingpin.Flag("bind", "Bind address:port").
 		Envar("LISTEN_ADDRESS_PORT").
@@ -52,6 +53,10 @@ var args = struct {
 		String(),
 	kingpin.Flag("geolite2-database-path", "GeoLite2 mmdb database file path.").
 		Envar("GL2_DATABASE_PATH").
+		Required().
+		String(),
+	kingpin.Flag("geolite2-database-filename", "GeoLite2 mmdb database filename.").
+		Envar("GL2_DATABASE_FILENAME").
 		Required().
 		String(),
 	kingpin.Flag("geolite2-locale", "GeoLite2 database file locale. Can be 'de', 'en'(default), 'es', 'fr', 'ja', 'pt-BR', 'ru”', and 'zh-CN").
@@ -107,7 +112,7 @@ func checkIP(w http.ResponseWriter, r *http.Request) {
 
 func post(address string) []byte {
 	// Load the GeoLite2-City database from the mmdb file path configured
-	reader, err := geoip2.NewCityReaderFromFile(*args.geolite2DatabasePath)
+	reader, err := geoip2.NewCityReaderFromFile(*args.geolite2DatabasePath + "/" + *args.geolite2DatabaseFilename)
 	if err != nil {
 		panic(err)
 	}
