@@ -50,9 +50,9 @@ var args = struct {
 		Envar("METRICS_URL_PATH").
 		Default("/metrics").
 		String(),
-	kingpin.Flag("geolite2-database-path", "GeoLite2 mmdb database file path").
+	kingpin.Flag("geolite2-database-path", "GeoLite2 mmdb database file path.").
 		Envar("GL2_DATABASE_PATH").
-		Default("/tmp/GeoLite2-City.mmdb").
+		Required().
 		String(),
 	kingpin.Flag("geolite2-locale", "GeoLite2 database file locale. Can be 'de', 'en'(default), 'es', 'fr', 'ja', 'pt-BR', 'ru”', and 'zh-CN").
 		Envar("GL2_LOCALE").
